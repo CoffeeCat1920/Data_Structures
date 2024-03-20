@@ -3,7 +3,6 @@
 pkgs.mkShell {
 
   name = "C++";
-
   buildInputs = with pkgs; [
     # builder
     gnumake
@@ -26,6 +25,9 @@ pkgs.mkShell {
 
     # libs
     glm
+
+    #shell
+    pkgs.zsh
   ];
 
   shellHook = ''
