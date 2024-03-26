@@ -1,51 +1,70 @@
 #include <iostream>
+#include <vector>
 
-struct ListNode {
-  ListNode* next;
-  int data;
-  ListNode(int data) {
-    this->data = data;
-    this->next = NULL;
-  }
-};
+using namespace std;
 
-ListNode* reverseKGroup(ListNode* head, int k) {
-  if (head == NULL) {
-    return head;
-  } 
-  else {
-    ListNode *hare = head, *tortoise = head;
-    while (hare != NULL) {
-      for (int i=0; i<k; i++) {
-        if (hare != NULL)
-        hare = hare->next;
+class Solution {
+
+public:
+
+  vector<int> sortArray( vector<int> nums ) {
+
+    int size = nums.size();
+
+    for ( int i = 0; i < size; i++ ) {
+      
+      for ( int j = i; j < size; j++ ) {
+        
+        if ( nums[i] > nums[j] ) {
+          
+          int temp = nums[i];
+          nums[i] = nums[j];
+          nums[j] = temp;
+
+        }
+
       }
-      tortoise->data = hare->data;
-      tortoise = hare;
-    }
-    return head;
-  }
-}
 
-int main (int argc, char *argv[]) {
-  ListNode* head = NULL, *temp = head;
-  int data;
-  for (int i = 1; i<6; i++) {
-    std::cout << "Enter the " << i << ":";
-    std::cin>>data;
-    if (temp==NULL) {
-      temp = new ListNode(data);
+    }
+    
+    return nums;
+
+  }
+
+  double findMedianSortedArrays(vector<int>& nums1, vector<int>& nums2) {
+
+    float result = 0;
+
+    nums1.insert( nums1.end(), nums2.begin(), nums2.end() );   
+
+    nums1 = sortArray( nums1 );
+
+    if ( nums1.size() % 2 != 0 ) {
+      
+      result = nums1[ int( nums1.size()/2 ) ]; 
+
     }
     else {
-      temp = new ListNode(data);
+
+      result =  ( float ( nums1[ nums1.size()/2 ] ) + float ( nums1[ ( nums1.size()/2 ) - 1 ] ) )  / 2 ;
+      
     }
-      temp=temp->next;
-      std::cout << "\n";
+
+    return result;
+
   }
-  while (head!=NULL) {
-    std::cout << head->data << " ";
-    head=head->next;
-  }
-  std::cout << "\n";
+
+};
+
+int main (int argc, char *argv[]) {
+  
+
+  Solution solution;
+
+  vector<int> nums1 = { 1, 2 };
+  vector<int> nums2 = { 3, 4 };
+
+  std::cout << solution.findMedianSortedArrays(nums1, nums2) << std::endl;
+
   return 0;
 }
