@@ -1,56 +1,42 @@
 #include <iostream>
-#include <vector>
 
-using namespace std;
-
-class Solution {
+class Base {
 
 public:
-
-  vector<int> sortArray( vector<int> nums ) {
-
-    int size = nums.size();
-
-    for ( int i = 0; i < size; i++ ) {
-      
-      for ( int j = i; j < size; j++ ) {
-        
-        if ( nums[i] > nums[j] ) {
-          
-          int temp = nums[i];
-          nums[i] = nums[j];
-          nums[j] = temp;
-
-        }
-
-      }
-
-    }
+  
+  void f1() {
     
-    return nums;
+    std::cout << "public wala function \n";  
 
   }
 
-  double findMedianSortedArrays(vector<int>& nums1, vector<int>& nums2) {
+private:
 
-    float result = 0;
+  void f2() {
 
-    nums1.insert( nums1.end(), nums2.begin(), nums2.end() );   
+    std::cout << "private wala function \n";
 
-    nums1 = sortArray( nums1 );
+  };
 
-    if ( nums1.size() % 2 != 0 ) {
-      
-      result = nums1[ int( nums1.size()/2 ) ]; 
+protected:
 
-    }
-    else {
+  void f3() {
 
-      result =  ( float ( nums1[ nums1.size()/2 ] ) + float ( nums1[ ( nums1.size()/2 ) - 1 ] ) )  / 2 ;
-      
-    }
+    std::cout << "protected wala function \n";  
 
-    return result;
+  }
+
+};
+
+class Child : Base {
+
+
+public:
+
+  void show() {
+
+    Base::f1(); // f1 can be used as it's public
+    Base::f3(); // f3 can be used as it's protected and Child is a part of Base family
 
   }
 
@@ -58,13 +44,14 @@ public:
 
 int main (int argc, char *argv[]) {
   
+  Child child;
 
-  Solution solution;
+  child.show();  
 
-  vector<int> nums1 = { 1, 2 };
-  vector<int> nums2 = { 3, 4 };
+  Base base;
 
-  std::cout << solution.findMedianSortedArrays(nums1, nums2) << std::endl;
+  base.f1(); // only public fuctions can be used
 
   return 0;
+
 }
