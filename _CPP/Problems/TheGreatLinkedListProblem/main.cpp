@@ -1,94 +1,76 @@
 #include <cstddef>
+#include <exception>
 #include <iostream>
-#include <string>
 
-struct Node {
-
+struct BTNode {
   int data;
-  Node *small, *large; 
+  BTNode* left;
+  BTNode* right;
 
-  Node(int data) {
+  BTNode(int data, BTNode* left, BTNode* right) {
     this->data = data;
-    large = NULL;
-    small = NULL;
+    this->right = right;
+    this->left = left;
+  }
+
+  BTNode(int data) {
+    this->data = data;
+    left = NULL;
+    right = NULL;
+  }
+
+  BTNode() {
+    data = 0; 
+    left = NULL;
+    right = NULL;
   }
 
 };
 
-class OrderedBinaryList {
-private:
+class Tree {
+private: 
+  BTNode* root;
 
-  // root
-  Node* root;
+  BTNode* insert(BTNode* root, int data) {
 
-  // insertion
-  Node* insert(Node* root, int data) {
-    if (root == NULL) {
-      return new Node(data); 
-    }
+    if (root==NULL) {
+      return new BTNode(data);
+    } 
     else {
-      if (root->data<data) {
-        root->large = insert(root->large, data);
-        return root;
+      if (root->data < data) {
+        root->right = insert(root->right, data);
       }
       else {
-        root->small = insert(root->small, data);
-        return root;
+        root->left = insert(root->left, data);
       }
     }
-    return NULL;
+    return root;
+
   }
 
-  // print
-  void print(Node* root) {
-    if (root==NULL) {
-      return;
-    }
-    else {
-      std::cout << root->data << std::endl;
-      print(root->small);
-      print(root->large);
-    }
-  }
+  void print(BTNode* root) {
+    if (root==NULL) return;
+    print(root->left);
+    std::cout << root->data;
+    print(root->right);
+  } 
 
-
-  Node* smallest(Node* root) {
-    if (root->small==NULL) {
+  BTNode* smallest(BTNode* root) {
+    if (root->left==NULL) {
       return root;
     }
     else {
-      smallest(root->small);
-    }
-    return NULL;
-  }
-
-  Node* largest(Node* root) {
-    if (root->large==NULL) {
-      return root;
-    }
-    else {
-      largest(root->large);
-    }
-    return NULL;
-  }
-
-  void printList(Node* root) {
-    if (root==NULL) {
-      return;
-    }
-    else {
-      std::cout << root->data << " ";
-      if (root->large==root) return;
-      printList(root->large);
+      BTNode* small = smallest(root->left);
+      return small;
     }
   }
 
 public:
-  
-  OrderedBinaryList() {
+
+  Tree() {
     root = NULL;
   }
-
+ 
   void insert(int data) {
     root = insert(root, data);
     return;
@@ -99,21 +81,91 @@ public:
     return;
   }
 
+  BTNode* smallest() {
+    return smallest(root);
+  }
 
-  void printList() {
-    printList(root);
-    return;
+  BTNode* getRoot() {
+    return root;
   }
 
 };
 
+void join(BTNode* a, BTNode* b) {
+
+  a->right = b;
+  b->left = a;
+
+}
+
+BTNode* append(BTNode* a, BTNode* b) {
+
+  BTNode* aLast, *bLast;
+
+  if (a==NULL) return b;
+  if (b==NULL) return a;
+
+  aLast = a->left;
+  bLast = b->left;
+
+  join(aLast, b);
+  join(bLast, a);
+
+  return a;
+
+}
+
+BTNode* treeToList(BTNode* root) {
+  
+  BTNode* aList, *bList;
+
+  if (root==NULL) {
+    return NULL;
+  }
+
+  aList = treeToList(root->left);
+  bList = treeToList(root->right);
+
+  root->left = root;
+  root->right = root;
+
+  aList = append(aList, root);
+  aList = append(aList, bList);
+
+  return aList;
+
+}
+
+void printList(BTNode* head) {
+  if (head == NULL) {
+    return;
+  }
+  else {
+    BTNode* current = head;
+    
+    // Traverse forward
+    do {
+        std::cout << current->data << " ";
+        current = current->right;
+    } while (current != head);
+  }
+}
+
 int main (int argc, char *argv[]) {
-  OrderedBinaryList list;
-  list.insert(4);
-  list.insert(2);
-  list.insert(5);
-  list.insert(1);
-  list.insert(3);
-  list.print();
+
+  Tree tree;
+
+  BTNode* list;
+
+  tree.insert(4);
+  tree.insert(2);
+  tree.insert(5);
+  tree.insert(3);
+  tree.insert(1);
+
+  list = treeToList(tree.getRoot());
+
+  printList(list);
+  
   return 0;
 }
