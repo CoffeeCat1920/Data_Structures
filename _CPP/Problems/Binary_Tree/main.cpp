@@ -78,7 +78,17 @@ private:
       else return right;
     }
   }
-  
+ 
+  // minimum value in a tree
+  int maxValue(BTNode* root) {
+    if (root->right==NULL) {
+      return root->data; 
+    }
+    else {
+      return maxValue(root->right);
+    }
+  }
+
   // minimum value in a tree
   int minValue(BTNode* root) {
     if (root->left==NULL) {
@@ -143,26 +153,21 @@ private:
 
   }
 
-  // print all root-to-leaf paths
-  BTNode* findNode (BTNode* node, int data) {
-    
+  void printPaths(BTNode* node, std::vector<int> path) {
+     
+  }
+
+  bool isBST(BTNode* node) {
     if (node == NULL) {
-
-      return NULL;
-
-    } 
-    else if (node->data == data) {
-
-      return node; 
-
-    } 
-    else {
-
-      findNode(node->left, data);
-      findNode(node->right, data);  
-
+      return true;
     }
-
+    else if (node->left != NULL && maxValue(node->left) > node->data ) {
+      return false; 
+    }
+    else if (node->right != NULL && minValue(node->right) > node->data) {
+      return false;
+    }
+    return true;
   }
 
 public:
@@ -209,11 +214,9 @@ public:
     return hasPathSum(root, sum, 0);
   }
 
-  void printPaths() {
-    std::vector<int> path;
-    printPaths();
+  bool isBST() {
+    return isBST(root);
   }
-
 };
 
 
@@ -234,13 +237,18 @@ int main (int argc, char *argv[]) {
 
   Tree tree;
 
+  BTNode* shitTree = new BTNode(1);
+
   tree.insert(4);
   tree.insert(5);
   tree.insert(2);
   tree.insert(3);
   tree.insert(1);
-  
-  tree.printPaths();
+
+  shitTree->right = new BTNode(2);
+  shitTree->left = new BTNode(3);
+
+  std::cout << tree.isBST() << std::endl;
 
   return 0;
 }
